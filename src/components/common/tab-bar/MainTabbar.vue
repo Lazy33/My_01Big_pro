@@ -14,7 +14,8 @@
       <TabbarItem path="/cart">
         <div class="fa fa-home" slot="tab-icon"></div>
         <div class="fa fa-star" slot="tab-icon-active"></div>
-        <div slot="tab-text">购物车</div>
+        <div slot="tab-text" v-if="cartLength!=0">购物车({{cartLength}})</div>
+        <div slot="tab-text" v-else>购物车</div>
       </TabbarItem>
       <TabbarItem path="/profile">
         <div class="fa fa-home" slot="tab-icon"></div>
@@ -26,9 +27,10 @@
 </template>
 
 <script>
-
   import Tabbar from './Tabbar'
   import TabbarItem from './Tabbar-item'
+
+  import { mapGetters } from 'vuex'
   export default {
     name: '',
     data(){
@@ -38,9 +40,11 @@
       TabbarItem,
       Tabbar
     },
-    created(){},
-    mounted(){},
-    methods: {}
+    computed:{
+      ...mapGetters([
+        'cartLength'
+      ])
+    },
   }
 </script>
 <style scoped>
