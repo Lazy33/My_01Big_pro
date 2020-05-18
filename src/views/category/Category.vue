@@ -1,17 +1,19 @@
 <template>
   <div id="cate">
     <!-- 顶部标题栏 -->
-      <NavBar class="nav-bar2" id="#Top">
-        <div slot="center" class="center">商品分类</div>
-      </NavBar>
-    <!-- <BetterScroll :click="true" :pullupload="true" :probeType="3" class="better-scroll" ref="better-scroll"> -->
+    <NavBar class="nav-bar2">
+      <div slot="center" class="center">商品分类</div>
+    </NavBar>
+    <BetterScroll :click="true" :pullupload="true" :probeType="3" class="better-scroll" ref="betterscroll" @bsscroll="catescroll">
       <!-- 左侧列表 -->
-      <CategoryList :ListGoods="ListGoods" class="left" @list-item-key="listItemKey"></CategoryList>
-      <CategoryListItem class="right" :ItemListGoods="ItemListGoods"></CategoryListItem>
-      <TabControl :titles="['综合','新品','销量']" class="tab-control right" @tabClick="tabClick" ref="tabContent"></TabControl>
-      <CategoryItemItem class="item-item right" :goods="goods[currentType].list"></CategoryItemItem>
-    <!-- </BetterScroll> -->
-    <a href="#Top"><BackTop></BackTop></a>
+      <div class="clearFloat">
+        <CategoryList :ListGoods="ListGoods" class="left" @list-item-key="listItemKey"></CategoryList>
+        <CategoryListItem class="right" :ItemListGoods="ItemListGoods"></CategoryListItem>
+        <TabControl :titles="['综合','新品','销量']" class="tab-control right" @tabClick="tabClick" ref="tabContent"></TabControl>
+        <CategoryItemItem class="item-item right" :goods="goods[currentType].list"></CategoryItemItem>
+      </div>
+    </BetterScroll>
+    <BackTop v-show="isShowTop" @click.native="backTop"></BackTop>
   </div>
   
 </template>
@@ -56,6 +58,8 @@ export default {
         sell:{page:0,list:[]}
       },
       currentType:'pop',
+      isShowTop:false,
+      isTabFixed:false
     }
   },
   created(){
@@ -87,7 +91,7 @@ export default {
         this.goods[type].page +=1
       })
     },
-    //本页的方法
+    //本页的常规方法
     listItemKey(item){
       this.sub = item
       this.getCategoryListItemdata(this.sub)
@@ -102,25 +106,36 @@ export default {
           break
       }
     },
-  },
+    catescroll(position){
+      // console.log(position);
+      this.isShowTop = position.y < -400
+    },
+    backTop(){
+      this.$refs.betterscroll.bs.scrollTo(0,0,2000)
+    }
+  }
 }
 </script>
 <style scoped>
   #cate{
     height: 100vh;
+    padding-top: 44px;
   }
  .nav-bar2{
     background: #FF8197;
     color: white;
-    position: sticky;
+    position: fixed;
     top: 0px;
     left: 0px;
   }
   .center{
     text-align: center;
   }
+  .clearFloat{
+    overflow: hidden;
+  }
   .better-scroll{
-    height: calc(100% - 94px);
+    height: calc(100% - 44px);
     overflow: hidden;
   }
 </style>
